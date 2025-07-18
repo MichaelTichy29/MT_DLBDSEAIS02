@@ -14,8 +14,6 @@ warnings.filterwarnings("ignore")
 ####################################################
 ########     Main Control: Start  ########
 ####################################################
-
-
 # name of dataset
 dataset = './Reviews.csv'
 #!!! The Text to analyse must be in a column named "Text".
@@ -29,11 +27,11 @@ no_ex = 5
 
 ####################################################
 ##### Parmeter for predef models  ######
-predef_model = 0
+predef_model = 0 # 1 -> on. 0  -> off
 
 #####vader
 # 1 => makes an analysis by vaders
-do_vader = 0
+do_vader = 0 # 1 -> on. 0  -> off
 if do_vader == 1:
 # 1 => makes some plots to the vader results 
     plt_vader_res = 1
@@ -44,9 +42,9 @@ if do_vader == 1:
 
 #####roberta
 # 1 => makes example for roberta
-do_rob_ex = 0
+do_rob_ex = 0 # 1 -> on. 0  -> off
 # 1 => makes an analysis by roberta
-do_rob = 0
+do_rob = 0 # 1 -> on. 0  -> off
 if do_rob == 1:
     # 1 => makes some plots to the roberta results 
     plt_roberta_res = 1
@@ -62,7 +60,7 @@ no_cc_pos = 0
 ####################################################
 ##### Parmeter for Maschine learning models  ######
 
-ml_model = 1
+ml_model = 1 # 1 -> on. 0  -> off
 analyzer = "word" # need for overriding preprocessing
 
 #vetroization 
