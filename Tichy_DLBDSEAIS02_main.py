@@ -20,7 +20,7 @@ dataset = './Reviews.csv'
 # !!! The ratings must be in a column named "Score"
 
 #number of rows for analyse
-number = 100
+number = 1000
 # number of text row for an example
 no_ex = 5
 
@@ -64,29 +64,29 @@ ml_model = 1 # 1 -> on. 0  -> off
 analyzer = "word" # need for overriding preprocessing
 
 #vetroization 
-vect = 2
+vect = 1
 # 1  # ->bag of words
 # 2  # -> TF-IDF
 
 # Preprocessing/Cleaning
-lowercase = True
+lowercase = False # True, False
 
 #stopw="None"
 stopw="english"
 
 #n grams: 
 nmin = 1 # min for ngram
-nmax = 1 # max for ngram
+nmax = 2 # max for ngram
 
 #frequency control for words in documents
 maxdf=1.0 # ignore terms with frequency higher
-mindf= 1.0 # ignore terms with frequency lower
+mindf= 0.0 # ignore terms with frequency lower
 
 # Selection of method: all four methods can be choosen at the same time. So the f1 score can be compared.
-do_lr = 0   # -> Logistic regression if it is 1
+do_lr = 1   # -> Logistic regression if it is 1
 do_lda = 1   # -> Linear Discriminat analysis if it is 1
-do_dt = 0  # -> Decission Tree if it is 1
-do_mb = 1  # -> Multinominal Naive Bayes if it is 1
+do_dt = 1  # -> Decission Tree if it is 1
+do_mb = 0  # -> Multinominal Naive Bayes if it is 1
 
 # For decission tree
 crit = "e" # criterion == entropy "e", gini "g"
@@ -118,9 +118,11 @@ example = df['Text'][no_ex]
 ########     downsize  ########
 ####################################################
 
+print("origianl size: ", df.shape, "\n")
+
 df = df.head(number)
 
-print(df.shape)
+print("downsized: ", df.shape, "\n")
 
 
 
@@ -191,14 +193,14 @@ if ba == 1:
 
 # call the machine learn model (more than one is possible)
 if ml_model == 1: 
-    f, a = ml_analysis(df, vect, lowercase, stopw, nmin, nmax, maxdf, mindf,do_lr, do_lda, do_dt, crit, do_mb, analyzer)
+    f, a, cf = ml_analysis(df, vect, lowercase, stopw, nmin, nmax, maxdf, mindf,do_lr, do_lda, do_dt, crit, do_mb, analyzer)
     
 # call the predefined model, or the example for roberta
 if predef_model == 1: 
     if do_vader == 1:
-        f,a = vader_analysis(df, plt_vader_res, vader_pos_limit, vader_neg_limit, cc, no_cc_pos, no_cc_neg)
+        f,a, cf = vader_analysis(df, plt_vader_res, vader_pos_limit, vader_neg_limit, cc, no_cc_pos, no_cc_neg)
     if do_rob == 1:
-       f,a = roberta_analysis(df, plt_roberta_res, cc, no_cc_pos, no_cc_neg)
+       f,a, cf = roberta_analysis(df, plt_roberta_res, cc, no_cc_pos, no_cc_neg)
     if do_rob_ex == 1: 
         roberta_ex(df, no_ex)
 

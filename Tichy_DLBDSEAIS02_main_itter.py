@@ -25,7 +25,7 @@ dataset = './Reviews.csv'
 # !!! The ratings must be in a column named "Score"
 
 #number of rows for analyse
-number = 100
+number = 1000
 
 ####################################################
 ########     decoding of meth for ML Models  ########
@@ -77,6 +77,7 @@ list_mindf = []
 list_maxdf = []
 list_f1 = []
 list_acc = []
+list_cf = []
 
 
 #################################################
@@ -111,13 +112,13 @@ def Auswertung(dataset):
             vader_pos_limit = pos * 0.1
             vader_neg_limit = neg* 0.1
             # call of the function 
-            f, a = vader_analysis(df, 0, vader_pos_limit, vader_neg_limit, 0, 0, 0)
+            f, a, cf = vader_analysis(df, 0, vader_pos_limit, vader_neg_limit, 0, 0, 0)
             
             #appending of parameters and results
             list_method.append("vader")
             list_crit.append("none")
-            list_limitpos.append("vader_pos_limit")
-            list_limitneg.append("vader_neg_limit")
+            list_limitpos.append(vader_pos_limit)
+            list_limitneg.append(vader_neg_limit)
             list_vect.append("none")
             list_lower.append("none")
             list_nmin.append("none")
@@ -126,9 +127,10 @@ def Auswertung(dataset):
             list_maxdf.append("none")
             list_f1.append(f)
             list_acc.append(a)
+            list_cf.append(cf)
                 
     # Roberta method. -> No variation
-    f,a = roberta_analysis(df, 0,0,0,0)
+    f,a, cf = roberta_analysis(df, 0,0,0,0)
     
     #appending of parameters and results
     list_method.append("Roberta")
@@ -143,30 +145,30 @@ def Auswertung(dataset):
     list_maxdf.append("none")
     list_f1.append(f)
     list_acc.append(a)
-        
-    
+    list_cf.append(cf)
+   
     
     
     # ML methods
-    mindf = 1 #no variation in this parameter
-    maxfd = 1 #no variation in this parameter
+    mindf = 0.0 #no variation in this parameter
+    maxdf = 1.0 #no variation in this parameter
     analyzer = "word"
-    for meth in range(4): # loop for the different methods
+    for meth in range(4): # (4)# loop for the different methods
         n_meth, do_lr, do_lda, do_dt, do_mb = meth_calc(meth)
-        for vect in range(1,3): # loop for the different vectorization methods
+        for vect in range(1,3):  # (1,3) # loop for the different vectorization methods
             if vect == 1:
                 nvect = "BoW"
             else:
                 nvect = "TF-IDF"
             nmin = 1
-            for nmax in range(nmin,4): # loop for the maximum size of the ngrams. the minimum size is set as 1.
-                for lw in range(2):  # loop if the vectorizer should lowercase the words first.
+            for nmax in range(nmin,4): # (nmin,4) # loop for the maximum size of the ngrams. the minimum size is set as 1.
+                for lw in range(2):  # (2) #loop if the vectorizer should lowercase the words first.
                     if lw == 0:
                         lowercase = True
                     else:
                         lowercase = False
                         
-                    for stop in range(2): # loop if stopwords should be used. 
+                    for stop in range(2): # (2) # loop if stopwords should be used. 
                         if stop == 0:
                              stopw = "english"
                         else:
@@ -176,7 +178,7 @@ def Auswertung(dataset):
                             crit = "egal"
                             # call of method
                             try:
-                                f,a = ml_analysis(df, vect, lowercase, stopw, nmin, nmax, maxdf, mindf,do_lr, do_lda, do_dt, crit, do_mb, analyzer)
+                                f,a, cf = ml_analysis(df, vect, lowercase, stopw, nmin, nmax, maxdf, mindf,do_lr, do_lda, do_dt, crit, do_mb, analyzer)
                             except RuntimeError:
                                 f = "fail"
                                 a = "fail"
@@ -193,10 +195,11 @@ def Auswertung(dataset):
                             list_maxdf.append(maxdf)
                             list_f1.append(f)
                             list_acc.append(a)
-                            
+                            list_cf.append(cf)
+                           
                         else: 
                             # parameter for the split. Only for the decission tree.
-                            for k_crit in range (2):
+                            for k_crit in range (2): # (2)
                                 if k_crit == 0: 
                                     crit = "e"
                                     n_crit = "entropie"
@@ -206,12 +209,12 @@ def Auswertung(dataset):
                                 
                                 try:
                                     # call of method
-                                    f,a = ml_analysis(df, vect, lowercase, stopw, nmin, nmax, maxdf, mindf,do_lr, do_lda, do_dt, crit, do_mb, analyzer)
+                                    f,a, cf = ml_analysis(df, vect, lowercase, stopw, nmin, nmax, maxdf, mindf,do_lr, do_lda, do_dt, crit, do_mb, analyzer)
                                 except RuntimeError:
                                     f = "fail"
                                     a = "fail"
                                 #appending of parameters and results
-                                ist_method.append(n_meth)
+                                list_method.append(n_meth)
                                 list_crit.append(n_crit)
                                 list_limitpos.append("none")
                                 list_limitneg.append("none")
@@ -223,14 +226,15 @@ def Auswertung(dataset):
                                 list_maxdf.append(maxdf)
                                 list_f1.append(f)
                                 list_acc.append(a)
-                                
+                                list_cf.append(cf)
+                               
                                 
 #call function                            
 Auswertung = Auswertung(dataset)
 
 # list to dataframe
-dfres = pd.DataFrame([list_method, list_crit, list_limitpos, list_limitneg, list_vect, list_lower, list_nmin, list_nmax, list_mindf, list_maxdf, list_f1, list_acc],
-                      index=["method", "criterion", "limit pos", "limit pos", "vectorization", "lower", "n gram min", "n gram max", "frequenz min", "frequenz max", "f1 score", "accuracy"])
+dfres = pd.DataFrame([list_method, list_crit, list_limitpos, list_limitneg, list_vect, list_lower, list_nmin, list_nmax, list_mindf, list_maxdf, list_f1, list_acc, list_cf],
+                      index=["method", "criterion", "limit pos", "limit neg", "vectorization", "lower", "n gram min", "n gram max", "frequenz min", "frequenz max", "f1 score", "accuracy", "Confusion"])
 dfres = dfres.transpose()
 
 # writing Dataframe to Excel

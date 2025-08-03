@@ -90,9 +90,9 @@ def vader_analysis(df, plt_vader_res, vader_pos_limit, vader_neg_limit, cc, no_c
     preds = vaders['Sentiment_est'].to_numpy()
     
     #calculate the f1 score and the accuracy
-    f,a = results(y_test, preds, y_test, "vader")
+    f,a, cf = results(y_test, preds, y_test, "vader")
     
-    return f,a # the results are only for the itter method, to write the results in lists.
+    return f,a, cf # the results are only for the itter method, to write the results in lists.
     
 
     
@@ -231,9 +231,9 @@ def roberta_analysis(df, plt_roberta_res, cc, no_cc_pos, no_cc_neg):
     
     
     #calculate the f1 score and the accuracy
-    f,a = results(y_test, preds, y_test, "roberta") 
+    f,a, cf = results(y_test, preds, y_test, "roberta") 
     
-    return f,a # the results are only for the itter method, to write the results in lists.
+    return f,a, cf # the results are only for the itter method, to write the results in lists.
 
     ####################################################
     ########    check the text to the value  ########

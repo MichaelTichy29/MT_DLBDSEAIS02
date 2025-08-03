@@ -70,7 +70,7 @@ def results(y_test, preds, y, method):
         frequency_counts = y.value_counts()
         print("Distribution of sentiments in train and test ", frequency_counts)
         
-    return f1, accuracy
+    return f1, accuracy, conf
 
 
 
@@ -117,7 +117,7 @@ def ml_analysis(df, vect, lc, stopw, nmin, nmax, maxdf, mindf, do_lr, do_lda, do
         preds = lr.predict(X_test) # make predictions
 
         #calculate the f1 score and the accuracy
-        f,a = results(y_test, preds, y, method)
+        f,a, conf = results(y_test, preds, y, method)
 
 
     ###### LDA     #############################
@@ -134,7 +134,7 @@ def ml_analysis(df, vect, lc, stopw, nmin, nmax, maxdf, mindf, do_lr, do_lda, do
         preds = LDA.predict(X_test)
         
         #calculate the f1 score and the accuracy
-        f,a = results(y_test, preds, y, method)
+        f,a, conf = results(y_test, preds, y, method)
 
     ###### Decission Tree   ####################
     
@@ -151,7 +151,7 @@ def ml_analysis(df, vect, lc, stopw, nmin, nmax, maxdf, mindf, do_lr, do_lda, do
         preds = decision_tree.predict(X_test)
 
         #calculate the f1 score and the accuracy
-        f,a = results(y_test, preds, y, method)
+        f,a, conf = results(y_test, preds, y, method)
 
 
     ###### Multinominal Bayes   ####################
@@ -167,9 +167,9 @@ def ml_analysis(df, vect, lc, stopw, nmin, nmax, maxdf, mindf, do_lr, do_lda, do
         preds = clf.predict(X_test)
         
         #calculate the f1 score and the accuracy
-        f,a = results(y_test, preds, y, method)
+        f,a, conf = results(y_test, preds, y, method)
 
-    return f, a
+    return f, a, conf
 
 
 
